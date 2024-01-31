@@ -24,6 +24,11 @@
           <label>rotateZ: {{rotateZ}}deg; </label>
           <input type="range" min="-180" max="180" v-model="rotateZ"/>
 
+          <label>Color: #{{color}}; </label>
+          <input type="text" v-model="color"/>
+
+          <br>
+
           <button type="button" @click.prevent="resetAllVal()">Reset</button>
           <button type="button" @click.prevent="copyVal()">Copy</button>
         </div>

@@ -5,6 +5,7 @@ Vue.createApp({
             rotateX : 0,
             rotateY : 0,
             rotateZ : 0,
+            color : '8d81f3'
         }
     },
     methods:{
@@ -23,14 +24,17 @@ Vue.createApp({
     },
     computed:{
         box(){
-            return{
+            return[{
                 transform:`
                 perspective(${this.perspective}px)
                 rotateX(${this.rotateX}deg)
                 rotateY(${this.rotateY}deg)
                 rotateZ(${this.rotateZ}deg)
                 `
-            }
-        }
+            }, {background: `#${this.color}`}]
+        },
+        // color(){
+        //     return{background: `#${this.color}`}
+        // }
     }
 }).mount('#app')
