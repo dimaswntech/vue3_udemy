@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VueJS Course</title>
+    <link rel="stylesheet" type="text/css" href="main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <p>{{fullName}}</p>
+      <p v-html="anchorHtml"></p>
+      <p>{{age}}</p>
+      <hr/>
+      <label>First Name</label>
+      <input type="text" v-model.lazy="firstName" />
+      <hr/>
+      <label>Mid Name</label>
+      <input type="text" @keyup.enter="updateMidName" />
+      <hr/>
+      <label>Last Name</label>
+      <input type="text" :value="lastName" @input.prevent="updateLastName('last name updt', $event)">
+      <label>Age</label>
+      <input type="number" v-model.number="age" />
+      <hr/>
+      <button type="button" @click="increment">increment</button>
+      <button type="button" @click="decrement">decrement</button>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
