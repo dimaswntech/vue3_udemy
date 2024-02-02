@@ -2,7 +2,8 @@ import {
     Form as VeeForm,
     Field as VeeField,
     defineRule,
-    ErrorMessage
+    ErrorMessage,
+    configure
 } from "vee-validate";
 import {
     required,
@@ -23,6 +24,7 @@ export default {
         app.component("ErrorMessage", ErrorMessage)
 
         defineRule('required', required)
+        defineRule('tos', required)
         defineRule('min', min)
         defineRule('max', max)
         defineRule('alphaSpaces', alphaSpaces)
@@ -31,5 +33,32 @@ export default {
         defineRule('max_value', maxVal)
         defineRule('confirmed', confirmed)
         defineRule('excluded', excluded)
+        defineRule('country_excluded', excluded)
+        defineRule('password_mismatch', confirmed)
+
+        configure({
+            generateMessage:(ctx)=>{
+                const messages = {
+                    required:`The field ${ctx.field} is required.`,
+                    min:`The field ${ctx.field} is too short.`,
+                    min_value:`The field ${ctx.field} is too low.`,
+                    max:`The field ${ctx.field} is too long.`,
+                    max_value:`The field ${ctx.field} is too high.`,
+                    email:`The field ${ctx.field} must be a valid email.`,
+                    excluded:`You are not allowed to use this value for this field ${ctx.field}.`,
+                    alpha_spaces:`The field ${ctx.field} may only contain alphabetic characters and spaces.`,
+                    country_excluded:`Due to restrictions, we do not accept users from this location.`,
+                    password_mismatch:`This password must match.`,
+                    tos:`You must accept the TOS.`
+                }
+                const message = messages[ctx.rule.name] ? messages[ctx.rule.name] : `The field ${ctx.field} is invalid`
+
+                return message
+            },
+            validateOnBlur:true,
+            validateOnChange:true,
+            validateOnInput:false,
+            validateOnModelUpdate:true
+        })
     }
 }
