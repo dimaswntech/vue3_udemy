@@ -40,7 +40,7 @@ export default {
 }
 
 .fade-leave-to {
-  transition: all 0s lienar;
+  transition: all 0s linear;
   opacity: 0;
 }
 </style>
