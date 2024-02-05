@@ -1,6 +1,6 @@
 <template>
 
-<Header></Header>
+  <Header></Header>
   <!-- Introduction -->
   <section class="mb-8 py-20 text-white text-center relative">
     <div
@@ -273,13 +273,25 @@
       <div class="player-duration">03:06</div>
     </div>
   </div>
-<Auth></Auth>
+  <Auth></Auth>
 </template>
 <script>
 import Header from "@/components/Header.vue";
 import Auth from "@/components/Auth.vue";
+import {mapWritableState} from "pinia";
+import useUserStore from "@/stores/user.js"
+import {auth} from "@/includes/firebase.js";
+
 export default {
-  name:'App',
-  components:{Auth, Header}
+  name: 'App',
+  components: {Auth, Header},
+  computed: {
+    ...mapWritableState(useUserStore, ["userLoggedIn"])
+  },
+  created() {
+    if (auth.currentUser){
+      this.userLoggedIn=true
+    }
+  }
 }
 </script>

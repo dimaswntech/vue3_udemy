@@ -1,6 +1,8 @@
 <template>
   <!-- Registration Form -->
-  <div class="text-white text-center font-bold p-4 rounded mb-4" v-if="reg_show_alert" :class="reg_alert_variant">{{reg_alert_message}}</div>
+  <div class="text-white text-center font-bold p-4 rounded mb-4" v-if="reg_show_alert" :class="reg_alert_variant">
+    {{ reg_alert_message }}
+  </div>
   <vee-form
       :validation-schema="schema"
       @submit="register"
@@ -17,7 +19,7 @@
       />
       <ErrorMessage
           class="text-red-600"
-          name="name" />
+          name="name"/>
     </div>
     <!-- Email -->
     <div class="mb-3">
@@ -30,7 +32,7 @@
       />
       <ErrorMessage
           class="text-red-600"
-          name="email" />
+          name="email"/>
     </div>
     <!-- Age -->
     <div class="mb-3">
@@ -42,7 +44,7 @@
       />
       <ErrorMessage
           class="text-red-600"
-          name="age" />
+          name="age"/>
     </div>
     <!-- Password -->
     <div class="mb-3">
@@ -59,7 +61,7 @@
             v-bind="field"
         />
         <div class="text-red-600" v-for="error in errors" :key="error">
-          {{error}}
+          {{ error }}
         </div>
       </vee-field>
       <!--              <ErrorMessage-->
@@ -77,7 +79,7 @@
       />
       <ErrorMessage
           class="text-red-600"
-          name="confirm_password" />
+          name="confirm_password"/>
     </div>
     <!-- Country -->
     <div class="mb-3">
@@ -91,7 +93,7 @@
       </vee-field>
       <ErrorMessage
           class="text-red-600"
-          name="country" />
+          name="country"/>
     </div>
     <!-- TOS -->
     <div class="mb-3 pl-6">
@@ -104,7 +106,7 @@
       <label class="inline-block">Accept terms of service</label>
       <ErrorMessage
           class="text-red-600 block"
-          name="tos" />
+          name="tos"/>
     </div>
     <button
         type="submit"
@@ -116,38 +118,55 @@
   </vee-form>
 </template>
 <script>
+import {auth, userCollection} from "@/includes/firebase.js";
+import {mapActions} from "pinia";
+import userUserStore from "@/stores/user.js"
+
 export default {
-  name:'RegisterForm',
-  data(){
-    return{
-      schema:{
-        name:"required|min:3|max:100|alphaSpaces",
-        email:"required|min:3|max:100|email",
-        age:"required|min_value:18|max_value:110",
-        password:"required|min:3|max:6|excluded:password",
-        confirm_password:"password_mismatch:@password",
-        country:"required|country_excluded:Germany",
-        tos:"tos"
+  name: 'RegisterForm',
+  data() {
+    return {
+      schema: {
+        name: "required|min:3|max:100|alphaSpaces",
+        email: "required|min:3|max:100|email",
+        age: "required|min_value:18|max_value:110",
+        password: "required|min:3|max:6|excluded:password",
+        confirm_password: "password_mismatch:@password",
+        country: "required|country_excluded:Germany",
+        tos: "tos"
       },
-      userData:{
-        country:'USA'
+      userData: {
+        country: 'USA'
       },
-      reg_in_submission:false,
-      reg_show_alert:false,
-      reg_alert_variant:"bg-blue-500",
-      reg_alert_message:"Please wait! Your account is being created"
+      reg_in_submission: false,
+      reg_show_alert: false,
+      reg_alert_variant: "bg-blue-500",
+      reg_alert_message: "Please wait! Your account is being created"
     }
   },
-  methods:{
-    register(val){
+  methods: {
+    ...mapActions(userUserStore, {
+      createUser: "register"
+    }),
+    async register(val) {
       this.reg_show_alert = true
-      this.reg_in_submission=true
-      this.reg_alert_variant="bg-blue-500"
-      this.reg_alert_message="Please wait! Your account is being created"
+      this.reg_in_submission = true
+      this.reg_alert_variant = "bg-blue-500"
+      this.reg_alert_message = "Please wait! Your account is being created"
 
-      this.reg_alert_variant="bg-blue-500"
-      this.reg_alert_message="Success! Your account has been created"
-      console.log(val)
+      let userCred = null
+      try {
+        await this.createUser(val)
+      } catch (error) {
+        this.reg_in_submission = false
+        this.reg_alert_variant = "bg-red-500"
+        this.reg_alert_message = "An unexpected error occured"
+        return
+      }
+
+      this.reg_alert_variant = "bg-green-500"
+      this.reg_alert_message = "Success! Your account has been created"
+      window.location.reload()
     },
   }
 }
